@@ -1,4 +1,4 @@
-![Cost of living screeshot](https://github.com/albertofortes/Cost-of-living/tree/main/public/images/screenshot.png)
+![Cost of living screeshot](https://raw.githubusercontent.com/albertofortes/Cost-of-living/main/public/images/screenshot.png)
 
 Example at https://eager-cray-e98bdf.netlify.app/
 
