@@ -1,3 +1,18 @@
+image to do
+
+Example at TO DO
+
+A learning project to keep in touch with latest ReactJS stacks.
+
+- React 17 with hooks and custom hooks
+- TypeScript
+- NextJS 12.0.4
+- Redux Tooltik: https://redux-toolkit.js.org/tutorials/typescript
+- MUI: https://mui.com/
+- React Chartist: https://www.npmjs.com/package/react-chartist
+
+---
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started

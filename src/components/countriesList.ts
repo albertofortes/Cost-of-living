@@ -1,0 +1,20 @@
+export const countriesList = [
+  { label: 'Belarus', value: 'belarus' },
+  { label: 'Brazil', value: 'brazil' },
+  { label: 'Canada', value: 'canada' },
+  { label: 'European Union', value: 'european-union' },
+  { label: 'Eurozone', value: 'eurozone' },
+  { label: 'France', value: 'france' },
+  { label: 'Germany', value: 'germany' },
+  { label: 'Greece', value: 'greece' },
+  { label: 'India', value: 'india' },
+  { label: 'Japan', value: 'japan' },
+  { label: 'Kazakhstan', value: 'kazakhstan' },
+  { label: 'Mexico', value: 'mexico' },
+  { label: 'Russia', value: 'russia' },
+  { label: 'Spain', value: 'spain' },
+  { label: 'Turkey', value: 'turkey' },
+  { label: 'Ukraine', value: 'ukraine' },
+  { label: 'United Kingdom', value: 'united-kingdom' },
+  { label: 'United States', value: 'united-states' }
+]
