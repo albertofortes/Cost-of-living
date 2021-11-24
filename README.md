@@ -1,6 +1,6 @@
-image to do
+![Cost of living screeshot](https://github.com/albertofortes/Cost-of-living/tree/main/public/images/screenshot.png)
 
-Example at TO DO
+Example at https://eager-cray-e98bdf.netlify.app/
 
 A learning project to keep in touch with latest ReactJS stacks.
 
