@@ -1,4 +1,4 @@
-import { FC, useState, useEffect} from 'react'
+import { FC, useState, useLayoutEffect} from 'react'
 import { useRouter } from 'next/router'
 import NextLink from 'next/link'
 
@@ -10,9 +10,9 @@ import Head from 'next/head'
 import { countriesList } from '../src/components/countriesList'
 
 import { TextField, Typography, MenuItem, Link as MUILink, Alert, AlertTitle } from '@mui/material'
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select, { SelectChangeEvent } from '@mui/material/Select'
 import { Box, styled } from '@mui/system'
-import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
 
 import ChartistGraph from 'react-chartist'
 
@@ -25,8 +25,16 @@ const MainWrapper = styled('div')(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
-  alignItems: 'center',
-}));
+  alignItems: 'center'
+}))
+
+const BoxHeadingSelector = styled(Box)({
+  marginBottom: '20px',
+  fontSize: '16px',
+  '@media (min-width: 768px)' : {
+    fontSize: '20px'
+  } 
+})
 
 type Props = {
   stats: any
@@ -34,12 +42,8 @@ type Props = {
 
 const Bar: FC<Props> = ({ stats }) => {
   const type = 'Bar'
-
-  console.log('stats: ', stats)
-
   const series = stats.map((m: any) => m.InflationRate === undefined ? 0 :  m.InflationRate)
   const noData: boolean = series.every((val: any) => val === 0)
-  console.log(noData)
 
   const data: any = {
     labels: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
@@ -59,7 +63,7 @@ const Bar: FC<Props> = ({ stats }) => {
   return (
     <>
       { noData  
-        ? <Alert severity="error"><AlertTitle>No data.</AlertTitle>Please select another year.</Alert>
+        ? <Alert severity="error" sx={{marginBottom: '1em'}}><AlertTitle>No data.</AlertTitle>Please select another year.</Alert>
         : <Box sx={{ 
           marginBottom: '10px',
           backgroundColor: 'transparent',
@@ -80,7 +84,7 @@ const Country: FC = () => {
   const inflationHistoric = useSelector((state: RootState) => state.inflation)
   const dispatch = useDispatch()
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     country && dispatch(fetchHistoricInflation(country, year))
   }, [country, year, dispatch])
 
@@ -109,34 +113,20 @@ const Country: FC = () => {
       </Head>
 
       <MainWrapper>
-        <Box sx={{ 
-          marginBottom: '10px'
-          }}>
-
-          <Typography variant="h5" gutterBottom component="div" sx={{
-            marginBottom: '1em',
-            fontSize: {
-              xs: 15, // theme.breakpoints.up('xs')
-              sm: 17, // theme.breakpoints.up('sm')
-              md: 18, // theme.breakpoints.up('md')
-              lg: 21, // theme.breakpoints.up('lg')
-              xl: 25, // theme.breakpoints.up('xl')
-            }
-          }}>
-            <NextLink href='/' passHref>
-                <MUILink sx={{verticalAlign: 'bottom'}}><KeyboardBackspaceIcon /></MUILink>
-            </NextLink> {country && getHumanReadableCountry(country)} inflation data for the year of <Select
-                variant="standard"
-                value={(year.toString())}
-                label="Year"
-                onChange={(e: SelectChangeEvent) => setYear(parseInt(e.target.value, 10) as number)}>
-                <MenuItem value={2021}>2021</MenuItem>
-                <MenuItem value={2020}>2020</MenuItem>
-                <MenuItem value={2019}>2019</MenuItem>
-                <MenuItem value={2018}>2018</MenuItem>
-              </Select>:
-          </Typography>
-        </Box>
+        <BoxHeadingSelector>
+          <NextLink href='/' passHref>
+              <MUILink sx={{verticalAlign: 'bottom'}}><KeyboardBackspaceIcon /></MUILink>
+          </NextLink> {country && getHumanReadableCountry(country)} inflation data for the year of <Select
+              variant="standard"
+              value={(year.toString())}
+              label="Year"
+              onChange={(e: SelectChangeEvent) => setYear(parseInt(e.target.value, 10) as number)}>
+            <MenuItem value={2021}>2021</MenuItem>
+            <MenuItem value={2020}>2020</MenuItem>
+            <MenuItem value={2019}>2019</MenuItem>
+            <MenuItem value={2018}>2018</MenuItem>
+          </Select>:
+        </BoxHeadingSelector>
 
         <Box sx={{
           display: {

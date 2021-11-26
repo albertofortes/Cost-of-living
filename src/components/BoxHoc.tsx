@@ -5,14 +5,14 @@ import { Box, styled } from '@mui/system'
 const CustomizedBox = styled(Box)`
   padding: 10px;
   border-radius: 5px;  
-  background-color: #043346;
+  background-color: rgba(4, 51, 70, .75);
   font-size: 25px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 150px;
+  height: 100px;
   margin-bottom: .5em;
   text-align: center;
 

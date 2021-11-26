@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useEffect, useRef, useMemo } from 'react'
 import NextLink from 'next/link'
 
 import { Box, styled } from '@mui/system'
@@ -12,10 +12,10 @@ import { countriesList } from './countriesList'
 import { formatDate, formatStringUrl } from './utils'
 
 const CustomizedTextField = styled(TextField)`
-  width: 100% !important;
+  width: 95% !important;
 
   @media (min-width: 960px) {
-    width: 25ch !important;
+    width: 18ch !important;
   }
 `;
 
@@ -28,7 +28,36 @@ type Props = {
   setEndDate: (value: Date) => void
 }
 
+type StartDateProps = {
+  startDate: Date,
+  setStartDate: (value: Date) => void,
+  endDate: Date
+}
+
+const StartDate: FC<StartDateProps> = ({startDate, endDate, setStartDate}) => {
+  return (
+    <>
+      <DatePicker
+        disableFuture
+        minDate={new Date('1961-02-01')}
+        maxDate={endDate}
+        openTo="year"
+        views={['year', 'month', 'day']}
+        label="select a start date"
+        value={startDate}
+        onChange={(newValue:any) => {
+          setStartDate(newValue)
+        }}
+        renderInput={(params:any) => <CustomizedTextField {...params} helperText={null} variant="standard" />}
+      />
+    </>
+  )
+} 
+
 const HomeForm: FC<Props> = ({ country, setCountry, startDate, setStartDate, endDate, setEndDate }) => {
+  const countryRef = useRef<string>('');
+  const memoizedStartDate = useMemo(() => <StartDate startDate={startDate} endDate={endDate} setStartDate={setStartDate} />, [startDate,])
+
   return (
     <>
       <Typography variant="h5" gutterBottom component="div" sx={{
@@ -46,7 +75,7 @@ const HomeForm: FC<Props> = ({ country, setCountry, startDate, setStartDate, end
           }
         }}>
         <NextLink href={formatStringUrl(country)} passHref>
-            <MUILink>{country}</MUILink>
+          <MUILink>{countryRef.current}</MUILink>
         </NextLink> inflation tax from {formatDate(startDate)} to {formatDate(endDate)}:
       </Typography>
 
@@ -61,19 +90,7 @@ const HomeForm: FC<Props> = ({ country, setCountry, startDate, setStartDate, end
         }}>
       
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <DatePicker
-            disableFuture
-            minDate={new Date('1961-02-01')}
-            maxDate={endDate}
-            openTo="year"
-            views={['year', 'month', 'day']}
-            label="select a start date"
-            value={startDate}
-            onChange={(newValue:any) => {
-              setStartDate(newValue)
-            }}
-            renderInput={(params:any) => <CustomizedTextField {...params} helperText={null} variant="standard" />}
-          />
+          {memoizedStartDate}
 
           <DatePicker
             disableFuture
@@ -96,6 +113,7 @@ const HomeForm: FC<Props> = ({ country, setCountry, startDate, setStartDate, end
           onChange={(event: any, val: any) => {
             if(!val) val = '' // bulletproof
             setCountry(val)
+            countryRef.current = val
             localStorage.setItem('inflation-country', JSON.stringify(val))
           }}
           inputValue={country}

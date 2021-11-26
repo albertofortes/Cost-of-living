@@ -10,7 +10,8 @@ A learning project to keep in touch with latest ReactJS stacks.
 - Redux Tooltik: https://redux-toolkit.js.org/tutorials/typescript
 - MUI: https://mui.com/
 - React Chartist: https://www.npmjs.com/package/react-chartist
-
+- API: statbureau.org for inflation data. This API is incomplete, lack of countries and updated data.
+- To DO: https://finnhub.io/ API for funds as S&P500 ...
 ---
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).

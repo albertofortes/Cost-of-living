@@ -6,15 +6,24 @@ import { Cached, ErrorOutline } from '@mui/icons-material/'
 
 import BoxHoc from './BoxHoc'
 
+interface InflationState {
+  results: {
+    rate: string,
+  },
+  error: string | null,
+  loading: boolean
+}
+
 type Props = {
-  rate: any,
+  rate: InflationState,
 }
 
 const RateBox: FC<Props> = ({ rate }) => {
+
   const renderInflationRate = () => {
     if (rate.loading) return <Cached />
     if (rate.error) return <div><ErrorOutline /></div>
-    return rate.results.rate + '%'
+    return rate.results.rate  + '%'
   }
 
   return (

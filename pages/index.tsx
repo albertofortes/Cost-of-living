@@ -3,6 +3,8 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 
+import WorldSvg from '../src/images/WorldSvg.svg'
+
 import HomeForm from '../src/components/HomeForm'
 import PriceBox from '../src/components/PriceBox'
 import RateBox from '../src/components/RateBox'
@@ -17,21 +19,43 @@ import { TextField, Typography, Alert, AlertTitle, autocompleteClasses } from '@
 import { Box, styled } from '@mui/system'
 import { Cached } from '@mui/icons-material'
 
-const MainWrapper = styled('div')(({ theme }) => ({
-  backgroundColor: theme.palette.background.default,
-  padding: theme.spacing(2),
-  borderRadius: theme.shape.borderRadius,
+interface MainWrapperProps {
+  bg?: any;
+}
+
+const MainWrapper = styled('div')<MainWrapperProps>(({bg}) => ({
+  backgroundImage: `url(${bg.src})`,
+  backgroundSize: 'contain',
+  backgroundRepeat: 'no-repeat',
+  backgroundPosition: 'center',
+  backgroundColor: '#13273d',
+  padding: '20px',
   height: 'auto',
   display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  alignItems: 'center',
+  flexDirection: 'column',  
   width: '100%',
   margin: 'auto',
+
   '@media (min-width: 768px)' : {
-    height: '100vh'
+    height: '100vh',
+    justifyContent: 'center',
+    alignItems: 'center',
   }
-}));
+}))
+
+const BoxWrapper = styled(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+  width: '100%',
+
+  '@media (min-width: 768px)' : {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    columnGap: '10px',
+    alignItems: 'end',
+    width: 'auto',
+  } 
+})
 
 interface AutocompleteOption {
   label: string,
@@ -48,6 +72,7 @@ const Home: NextPage = () => {
   const inflationHistoric = useSelector((state: RootState) => state.inflation)
   const inflationValue = useSelector((state: RootState) => state.inflation)
   const dispatch = useDispatch()
+  
 
   useEffect(() => {
     dispatch(fetchInflationRate(formatStringUrl(country), formatDate(startDateValue), formatDate(endDateValue)))
@@ -65,9 +90,9 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <MainWrapper>
+      <MainWrapper bg={WorldSvg}>
 
-        { !country && <Alert severity="error"><AlertTitle>Error</AlertTitle>You must select a country!</Alert> }
+        { !country && <Alert  sx={{marginBottom: '1em'}} severity="error"><AlertTitle>Error</AlertTitle>You must select a country!</Alert> }
 
         <HomeForm 
           country={country} 
@@ -78,31 +103,12 @@ const Home: NextPage = () => {
           setEndDate={setEndDateValue}
         />
         
-        
+        <BoxWrapper>
+          { !!inflationRate && <RateBox rate={inflationRate} /> }
+          { !!inflationValue && <ValueBox data={inflationValue} amount={amount} setAmount={setAmount} /> }
+          { !!inflationPrice && <PriceBox data={inflationPrice} /> }
+        </BoxWrapper>
 
-        <Box sx={{           
-          display: 'flex',
-          flexDirection: 'column',
-          width: '100%',
-          '@media (min-width: 768px)' : {
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            columnGap: '10px',
-            alignItems: 'end',
-            width: 'auto',
-          }          
-        }}>
-
-          { inflationRate && <RateBox rate={inflationRate} /> }
-
-          { inflationValue && <ValueBox data={inflationValue} amount={amount} setAmount={setAmount} /> }
-
-          { inflationPrice && <PriceBox data={inflationPrice} /> }
-
-        </Box>
-
-
-        {/* inflationHistoric && renderInflationHistoric() */}
       </MainWrapper>
     </>
   )
