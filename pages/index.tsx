@@ -63,7 +63,7 @@ interface AutocompleteOption {
 }
 
 const Home: NextPage = () => {
-  const [country, setCountry] = useState<string | any>(useLocalStorage('inflation-country', 'Spain')[0])
+  const [country, setCountry] = useState<string>('Spain')
   const [amount, setAmount] = useState<number>(1000)
   const [startDateValue, setStartDateValue] = useState<Date>(new Date(2000, 0, 1))
   const [endDateValue, setEndDateValue] = useState<Date>(new Date())
@@ -73,14 +73,11 @@ const Home: NextPage = () => {
   const inflationValue = useSelector((state: RootState) => state.inflation)
   const dispatch = useDispatch()
   
-
   useEffect(() => {
     dispatch(fetchInflationRate(formatStringUrl(country), formatDate(startDateValue), formatDate(endDateValue)))
     dispatch(fetchInflationValue(amount, formatStringUrl(country), formatDate(startDateValue), formatDate(endDateValue)))
     dispatch(fetchInflationPrice(amount, formatStringUrl(country), formatDate(startDateValue), formatDate(endDateValue)))
   }, [dispatch, amount, country, startDateValue, endDateValue])
-
-  
 
   return (
     <>

@@ -1,8 +1,8 @@
-import { FC, useEffect, useRef, useMemo } from 'react'
+import { FC, ChangeEvent, useEffect, useRef, useMemo, SelectHTMLAttributes } from 'react'
 import NextLink from 'next/link'
 
 import { Box, styled } from '@mui/system'
-import { Autocomplete, TextField, Typography, Link as MUILink } from '@mui/material'
+import { Autocomplete, TextField, Typography, SelectChangeEvent, Link as MUILink } from '@mui/material'
 
 import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import DatePicker from '@mui/lab/DatePicker'
@@ -28,13 +28,18 @@ type Props = {
   setEndDate: (value: Date) => void
 }
 
-type StartDateProps = {
+type DatesStartProps = {
   startDate: Date,
   setStartDate: (value: Date) => void,
   endDate: Date
 }
 
-const StartDate: FC<StartDateProps> = ({startDate, endDate, setStartDate}) => {
+type DatesEndProps = {
+  endDate: Date,
+  setEndDate: (value: Date) => void
+}
+
+const StartDate: FC<DatesStartProps> = ({startDate, endDate, setStartDate}) => {
   return (
     <>
       <DatePicker
@@ -45,8 +50,28 @@ const StartDate: FC<StartDateProps> = ({startDate, endDate, setStartDate}) => {
         views={['year', 'month', 'day']}
         label="select a start date"
         value={startDate}
-        onChange={(newValue:any) => {
-          setStartDate(newValue)
+        onChange={(date: Date | null) => {
+          setStartDate(date as Date)
+        }}
+        renderInput={(params:any) => <CustomizedTextField {...params} helperText={null} variant="standard" />}
+      />
+    </>
+  )
+}
+
+const EndDate: FC<DatesEndProps> = ({endDate, setEndDate}) => {
+  return (
+    <>
+      <DatePicker
+        disableFuture
+        minDate={new Date('1961-02-02')}
+        maxDate={endDate}
+        openTo="year"
+        views={['year', 'month', 'day']}
+        label="select an end date"
+        value={endDate}
+        onChange={(date: Date | null) => {
+          setEndDate(date as Date);
         }}
         renderInput={(params:any) => <CustomizedTextField {...params} helperText={null} variant="standard" />}
       />
@@ -55,8 +80,14 @@ const StartDate: FC<StartDateProps> = ({startDate, endDate, setStartDate}) => {
 } 
 
 const HomeForm: FC<Props> = ({ country, setCountry, startDate, setStartDate, endDate, setEndDate }) => {
-  const countryRef = useRef<string>('');
-  const memoizedStartDate = useMemo(() => <StartDate startDate={startDate} endDate={endDate} setStartDate={setStartDate} />, [startDate,])
+  const memoizedStartDate = useMemo(() => <StartDate startDate={startDate} endDate={endDate} setStartDate={setStartDate} />, [startDate, endDate, setStartDate])
+  const memoizedEndDate = useMemo(() => <EndDate endDate={endDate} setEndDate={setEndDate} />, [endDate, setEndDate])
+  
+  const handleCountryChange = (e: ChangeEvent<any>, value: any): void => {
+    if(!value) return
+    localStorage.setItem('inflation-country', JSON.stringify(value))
+    setCountry(value)
+  }
 
   return (
     <>
@@ -74,8 +105,8 @@ const HomeForm: FC<Props> = ({ country, setCountry, startDate, setStartDate, end
             textAlign: 'left'
           }
         }}>
-        <NextLink href={formatStringUrl(country)} passHref>
-          <MUILink>{countryRef.current}</MUILink>
+        <NextLink href={{ pathname: formatStringUrl(country) }}>
+          <MUILink>{country}</MUILink>
         </NextLink> inflation tax from {formatDate(startDate)} to {formatDate(endDate)}:
       </Typography>
 
@@ -91,31 +122,14 @@ const HomeForm: FC<Props> = ({ country, setCountry, startDate, setStartDate, end
       
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           {memoizedStartDate}
-
-          <DatePicker
-            disableFuture
-            minDate={new Date('1961-02-02')}
-            maxDate={endDate}
-            openTo="year"
-            views={['year', 'month', 'day']}
-            label="select an end date"
-            value={endDate}
-            onChange={(newValue:any) => {
-              setEndDate(newValue);
-            }}
-            renderInput={(params:any) => <CustomizedTextField {...params} helperText={null} variant="standard" />}
-          />
+          {memoizedEndDate}          
         </LocalizationProvider>
 
         <Autocomplete
           disablePortal
+          disableClearable
           value={country}
-          onChange={(event: any, val: any) => {
-            if(!val) val = '' // bulletproof
-            setCountry(val)
-            countryRef.current = val
-            localStorage.setItem('inflation-country', JSON.stringify(val))
-          }}
+          onChange={handleCountryChange}
           inputValue={country}
           options={countriesList.map((option) => option.label)}
           renderInput={(params) => <CustomizedTextField {...params} label="Countries" variant="standard" />}
