@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { fetchHistoricInflation } from '../src/reducers/inflation'
 
 import Head from 'next/head'
-import { countriesList } from '../src/components/countriesList'
+import { countriesList } from '../src/data/countriesList'
 
 import { TextField, Typography, MenuItem, Link as MUILink, Alert, AlertTitle } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
@@ -36,11 +36,7 @@ const BoxHeadingSelector = styled(Box)({
   } 
 })
 
-type Props = {
-  stats: any
-}
-
-const Bar: FC<Props> = ({ stats }) => {
+const Bar: FC<{stats: []}> = ({ stats }) => {
   const type = 'Bar'
   const series = stats.map((m: any) => m.InflationRate === undefined ? 0 :  m.InflationRate)
   const noData: boolean = series.every((val: any) => val === 0)
@@ -77,7 +73,7 @@ const Bar: FC<Props> = ({ stats }) => {
   )
 }
 
-const Country: FC = () => {
+const Country = () => {
   const [ year, setYear ] = useState<number>(new Date().getFullYear())
   const router = useRouter()
   const country = router.query.country as string // const { country } = router.query

@@ -8,7 +8,7 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import DatePicker from '@mui/lab/DatePicker'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 
-import { countriesList } from './countriesList'
+import { countriesList } from '../data/countriesList'
 import { formatDate, formatStringUrl } from './utils'
 
 const CustomizedTextField = styled(TextField)`
@@ -28,18 +28,11 @@ type Props = {
   setEndDate: (value: Date) => void
 }
 
-type DatesStartProps = {
+const StartDate: FC<{
   startDate: Date,
   setStartDate: (value: Date) => void,
   endDate: Date
-}
-
-type DatesEndProps = {
-  endDate: Date,
-  setEndDate: (value: Date) => void
-}
-
-const StartDate: FC<DatesStartProps> = ({startDate, endDate, setStartDate}) => {
+  }> = ({startDate, endDate, setStartDate}) => {
   return (
     <>
       <DatePicker
@@ -59,7 +52,10 @@ const StartDate: FC<DatesStartProps> = ({startDate, endDate, setStartDate}) => {
   )
 }
 
-const EndDate: FC<DatesEndProps> = ({endDate, setEndDate}) => {
+const EndDate: FC<{
+  endDate: Date, 
+  setEndDate: (value: Date) => void
+}> = ({endDate, setEndDate}) => {
   return (
     <>
       <DatePicker
@@ -77,13 +73,13 @@ const EndDate: FC<DatesEndProps> = ({endDate, setEndDate}) => {
       />
     </>
   )
-} 
+}
 
-const HomeForm: FC<Props> = ({ country, setCountry, startDate, setStartDate, endDate, setEndDate }) => {
-  const memoizedStartDate = useMemo(() => <StartDate startDate={startDate} endDate={endDate} setStartDate={setStartDate} />, [startDate, endDate, setStartDate])
-  const memoizedEndDate = useMemo(() => <EndDate endDate={endDate} setEndDate={setEndDate} />, [endDate, setEndDate])
-  
-  const handleCountryChange = (e: ChangeEvent<any>, value: any): void => {
+const CountrySelector: FC<{
+  country: string, 
+  setCountry: (value: string) => void
+}> = ({country, setCountry}) => {
+  const handleCountryChange = (e: ChangeEvent<{}>, value: any): void => {
     if(!value) return
     localStorage.setItem('inflation-country', JSON.stringify(value))
     setCountry(value)
@@ -91,14 +87,34 @@ const HomeForm: FC<Props> = ({ country, setCountry, startDate, setStartDate, end
 
   return (
     <>
+      <Autocomplete
+        disablePortal
+        disableClearable
+        value={country}
+        onChange={handleCountryChange}
+        inputValue={country}
+        options={countriesList.map((option) => option.label)}
+        renderInput={(params) => <CustomizedTextField {...params} label="Countries" variant="standard" />}
+      />
+    </>
+  )
+}
+
+const HomeForm: FC<Props> = ({ country, setCountry, startDate, setStartDate, endDate, setEndDate }) => {
+  const memoizedStartDate = useMemo(() => <StartDate startDate={startDate} endDate={endDate} setStartDate={setStartDate} />, [startDate, endDate, setStartDate])
+  const memoizedEndDate = useMemo(() => <EndDate endDate={endDate} setEndDate={setEndDate} />, [endDate, setEndDate])
+  const memoizedCountrySelector = useMemo(() => <CountrySelector country={country} setCountry={setCountry} />, [country, setCountry])
+
+  return (
+    <>
       <Typography variant="h5" gutterBottom component="div" sx={{
           marginBottom: '1em',
           fontSize: {
-            xs: 17, // theme.breakpoints.up('xs')
-            sm: 17, // theme.breakpoints.up('sm')
-            md: 18, // theme.breakpoints.up('md')
-            lg: 21, // theme.breakpoints.up('lg')
-            xl: 25, // theme.breakpoints.up('xl')
+            xs: 17,
+            sm: 17,
+            md: 18,
+            lg: 21,
+            xl: 25,
           },
           textAlign: 'center',
           '@media (min-width: 780px)' : {
@@ -118,23 +134,12 @@ const HomeForm: FC<Props> = ({ country, setCountry, startDate, setStartDate, end
           flexDirection: 'row',
           marginBottom: '1em',
           '& .MuiTextField-root': { m: 1, width: '25ch' },
-        }}>
-      
+        }}>      
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           {memoizedStartDate}
           {memoizedEndDate}          
         </LocalizationProvider>
-
-        <Autocomplete
-          disablePortal
-          disableClearable
-          value={country}
-          onChange={handleCountryChange}
-          inputValue={country}
-          options={countriesList.map((option) => option.label)}
-          renderInput={(params) => <CustomizedTextField {...params} label="Countries" variant="standard" />}
-        />
-
+        {memoizedCountrySelector}
       </Box>
     </>
   )

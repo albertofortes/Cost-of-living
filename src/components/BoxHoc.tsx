@@ -23,10 +23,6 @@ const CustomizedBox = styled(Box)`
   }
 `;
 
-type Props = {
-  ChildComp: any
-}
-
 // FC always implies children and report error
 const BoxHoc = (ChildComp: any) => {
   const ComponentWrapped = (props: any) => {

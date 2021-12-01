@@ -14,11 +14,7 @@ interface InflationState {
   loading: boolean
 }
 
-type Props = {
-  data: InflationState
-}
-
-const PriceBox: FC<Props> = ({ data }) => {
+const PriceBox: FC<{data: InflationState}> = ({ data }) => {
   const renderInflationPrice = () => {
     if (data.loading) return <Cached />
     if (data.error) return <div><ErrorOutline /></div>
@@ -30,11 +26,11 @@ const PriceBox: FC<Props> = ({ data }) => {
       <Typography variant="h6" gutterBottom component="div" sx={{
           marginBottom: '1em',
           fontSize: {
-            xs: 13, // theme.breakpoints.up('xs')
-            sm: 15, // theme.breakpoints.up('sm')
-            md: 17, // theme.breakpoints.up('md')
-            lg: 19, // theme.breakpoints.up('lg')
-            xl: 21, // theme.breakpoints.up('xl')
+            xs: 13,
+            sm: 15,
+            md: 17,
+            lg: 19,
+            xl: 21,
           }
         }}>
           were equivalent to:
