@@ -23,9 +23,13 @@ const CustomizedBox = styled(Box)`
   }
 `;
 
+interface BoxHocProps {
+  ChildComp: JSX.Element | JSX.Element[]
+}
+
 // FC always implies children and report error
 const BoxHoc = (ChildComp: any) => {
-  const ComponentWrapped = (props: any) => {
+  const ComponentWrapped = (props: BoxHocProps) => {
     return (
       <CustomizedBox>        
         <ChildComp {...props} />
